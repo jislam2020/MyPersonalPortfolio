@@ -5,37 +5,26 @@
   * The library should be uploaded to: vendor/php-email-form/php-email-form.php
   * For more info and help: https://bootstrapmade.com/php-email-form/
   */
-
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@example.com';
-
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
-
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject = $_POST['subject'];
-
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
-
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
-
-  echo $contact->send();
+  // Replace contact@example.com(opens in new tab) with your real receiving email address
+// Check for empty fields
+if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['message']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+  http_response_code(500);
+  exit();
+}
+$name = strip_tags(htmlspecialchars($_POST['name']));
+$email = strip_tags(htmlspecialchars($_POST['email']));
+$message = strip_tags(htmlspecialchars($_POST['message']));
+// Create the email and send the message
+$to = "islamjahid316@gmail.com"; // Add your email address inbetween the "" replacing yourname@yourdomain.com(opens in new tab) - This is where the form will send a message to.
+$subject = "New User:  $name";
+$body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email\n\nMessage:\n$message";
+$header = "From: noreply@noorulkarim.com(opens in new tab)\n"; // This is the email address the generated message will be from. We recommend using something like noreply@yourdomain.com(opens in new tab).
+$header .= "Reply-To: $email";
+if(!mail($to, $subject, $body, $header))
+  http_response_code(500);
 ?>
+
+
+
+
+
